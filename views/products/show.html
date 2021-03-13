@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <title>Ecommerce</title>
+    <style>
+      body {
+        background: #282828;
+        color: #fff;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 100;
+      }
+  
+      a {
+        color: lawngreen;
+      }
+
+      main {
+        margin-top: 75px;
+      }
+
+      main img {
+        border: 1px #fff solid;
+        margin-top: 20px;
+      }
+
+      main h1 {
+        font-size: 45px;
+      }
+
+      main p {
+        font-size: 20px;
+        margin-top: 35px;
+      }
+
+      main .price {
+        margin-top: 65px;
+      }
+
+      main button {
+        width: 140px;
+        height: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <h1>Ecommerce</h1>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/products/new">Add Product</a></li>
+          <li><a href="/products/category/laptops">Laptops</a></li>
+          <li><a href="/products/category/consoles">Consoles</a></li>
+          <li><a href="/products/category/games">Games</a></li>
+          <li><a href="/products/category/keyboards">Keyboards</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <h1><%= product.title %></h1>
+      <img width="60%" height="30%" src="https://ecommerce-template-tommy.s3.eu-central-1.amazonaws.com/<%= product.imagePath %>">
+      <p><%= product.description %></p>
+      <h1 class="price">$<%= product.price %></h1>
+      <button>Add To Cart</button>
+    </main>
+  </body>
+</html>

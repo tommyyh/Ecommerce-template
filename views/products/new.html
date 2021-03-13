@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <title>Ecommerce | New Product</title>
+  </head>
+  <style>
+    body {
+      background: #282828;
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 100;
+    }
+
+    a {
+      color: lawngreen;
+    }
+  </style>
+  <body>
+    <header>
+      <nav>
+        <h1>Ecommerce</h1>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/products/new">Add Product</a></li>
+          <li><a href="/products/category/laptops">Laptops</a></li>
+          <li><a href="/products/category/consoles">Consoles</a></li>
+          <li><a href="/products/category/games">Games</a></li>
+          <li><a href="/products/category/keyboards">Keyboards</a></li>
+        </ul>
+      </nav>
+    </header>
+    <h1>Add New Category</h1>
+    <form action="/products/category" method="POST">
+      <div>
+        <input type="text" name="category" placeholder="Category" />
+      </div>
+      <button type="submit" style="margin-top: 8px">Add Category</button>
+    </form>
+    <h1 style="margin-top: 65px">Add New Product</h1>
+    <form action="/products/new" method="POST" enctype="multipart/form-data">
+      <div>
+        <% if (categories) { %>
+          <select name="productCategory">
+            <% categories.forEach(category => { %>
+                <option value="<%= category.title %>"><%= category.title %></option>
+            <% }) %>
+          </select>
+        <% } else { %>
+          <select name="productCategory">
+            <option></option>
+          </select>
+        <% } %>
+      </div>
+      <div>
+        <input type="text" name="title" placeholder="Title" />
+      </div>
+      <div>
+        <input type="number" name="price" step="0.01" placeholder="Price" />
+      </div>
+      <div>
+        <input type="text" name="brand" placeholder="Brand" />
+      </div>
+      <div>
+        <input type="number" name="discount" placeholder="Discount" />
+      </div>
+      <div>
+        <input type="text" name="description" placeholder="Description" />
+      </div>
+      <div>
+        <input type="file" name="productImage" placeholder="Image" />
+      </div>
+      <button style="margin-top: 25px" type="submit">Add Product</button>
+    </form>
+  </body>
+</html>

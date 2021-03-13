@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <title>Ecommerce</title>
+    <style>
+      body {
+        background: #282828;
+        color: #fff;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 100;
+      }
+  
+      a {
+        color: lawngreen;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <h1>Ecommerce</h1>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/products/new">Add Product</a></li>
+          <li><a href="/products/category/laptops">Laptops</a></li>
+          <li><a href="/products/category/consoles">Consoles</a></li>
+          <li><a href="/products/category/games">Games</a></li>
+          <li><a href="/products/category/keyboards">Keyboards</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main style="margin-top: 65px;">
+      <h1 style="font-size: 50px;"><%= category.title %></h1>
+      <% if (!category.Products[0]) { %>
+        <h1>No products available.</h1>
+      <% } else { %>
+        <% category.Products.forEach(product => { %>
+          <div style="margin-top: 90px;">
+            <a href="/products/show/<%= product.slug %>"><img width="275px" height="175px" src="https://ecommerce-template-tommy.s3.eu-central-1.amazonaws.com/<%= product.imagePath %>"></a>
+            <h2><%= product.title %></h2>
+            <h2>$<%= product.price %></h2>
+          </div>
+        <% }) %>
+      <% } %>
+    </main>
+  </body>
+</html>

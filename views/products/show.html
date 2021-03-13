@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <title>Ecommerce</title>
+    <title>Ecommerce | <%= product.title %></title>
     <style>
       body {
         background: #282828;
@@ -45,6 +45,11 @@
         width: 140px;
         height: 40px;
       }
+
+      .edit-link, .delete-link {
+        color: #000;
+        text-decoration: none;
+      }
     </style>
   </head>
   <body>
@@ -65,8 +70,13 @@
       <h1><%= product.title %></h1>
       <img width="60%" height="30%" src="https://ecommerce-template-tommy.s3.eu-central-1.amazonaws.com/<%= product.imagePath %>">
       <p><%= product.description %></p>
+      <h3>Brand: <%= product.brand %></h3>
       <h1 class="price">$<%= product.price %></h1>
       <button>Add To Cart</button>
+      <a class="edit-link" href="/products/edit/<%= product.slug %>"><button>Edit Product</button></a>
+      <form action="/products/delete/<%= product.slug %>?_method=DELETE" method="POST">
+        <button style="margin-top: 4px;" type="submit">Remove Product</button>
+      </form>
     </main>
   </body>
 </html>

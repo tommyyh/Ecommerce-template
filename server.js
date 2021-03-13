@@ -1,5 +1,6 @@
 const express = require('express');
 const ejs = require('ejs');
+const methodOverride = require('method-override');
 
 const app = express();
 
@@ -10,6 +11,9 @@ app.use(express.static('public'));
 
 // Parse data
 app.use(express.urlencoded({ extended: false, limit: '50mb' }));
+
+// Method override
+app.use(methodOverride('_method'));
 
 // Routes
 app.use('/', require('./routes/index')); // Home routes

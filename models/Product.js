@@ -28,6 +28,7 @@ const Product = db.define('Product', {
   },
   imagePath: {
     type: DataTypes.STRING,
+    allowNull: true
   },
   quantity: {
     type: DataTypes.INTEGER,

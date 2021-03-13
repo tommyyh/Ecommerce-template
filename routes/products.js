@@ -6,6 +6,7 @@ const express = require('express');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const aws = require('aws-sdk');
+const slugify = require('slugify');
 
 const router = express.Router();
 const { Category, Product } = require('../database/associations');
@@ -93,6 +94,84 @@ router.post('/new', upload.single('productImage'), async (req, res) => {
     res.redirect(`/products/show/${product.slug}`);
   } catch {
     res.redirect('/products/new');
+  }
+});
+
+// Edit a product
+router.get('/edit/:slug', async (req, res) => {
+  const categories = await Category.findAll();
+  const product = await Product.findOne({ where: { slug: req.params.slug } });
+
+  res.render('products/edit.html', {
+    categories,
+    product
+  });
+});
+
+router.put('/edit/:slug', upload.single('productImage'), async (req, res) => {
+  const product = await Product.findOne({ where: { slug: req.params.slug } });
+  const slug = slugify(req.body.title, { strict: true, lower: true });
+  const {
+    title,
+    price,
+    brand,
+    productCategory,
+    description,
+    discount,
+  } = req.body; // Input values
+
+  // Image path / name / key
+  const imagePath = req.file ? req.file.key : product.imagePath
+
+  try {
+    // If an img was uploaded - delete old, add new
+    if (req.file) {
+      await s3.deleteObject({
+        Bucket: 'ecommerce-template-tommy',
+        Key: product.imagePath
+      }, (err, data) => {
+        if (err) console.log(err);
+      });
+    }
+
+    console.log(imagePath);
+
+    // Add product to a database
+    await Product.update({
+      title,
+      price,
+      brand,
+      productCategory,
+      description,
+      imagePath,
+      discount,
+      CategoryTitle: req.body.productCategory,
+      slug: slug,
+      createdAt: product.createdAt
+    }, { where: { slug: req.params.slug } });
+
+    res.redirect(`/products/show/${product.slug}`);
+  } catch {
+    res.redirect(`/products/edit/${product.slug}`);
+  }
+});
+
+// Delete product
+router.delete('/delete/:slug', async (req, res) => {
+  const product = await Product.findOne({ where: { slug: req.params.slug } });
+  
+  try {
+    await product.destroy();
+    await s3.deleteObject({
+      Bucket: 'ecommerce-template-tommy',
+      Key: product.imagePath
+    }, (err, data) => {
+      if (err) console.log(err);
+    });
+
+    res.redirect(`/products/category/${product.CategoryTitle}`)
+  } catch {
+    res.redirect(`/products/show/${product.slug}`);
   }
 });
 

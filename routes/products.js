@@ -58,7 +58,7 @@ router.get('/show/:slug', async (req, res) => {
 });
 
 // New
-router.get('/new', async (req, res) => {
+router.get('/new', isAdmin, async (req, res) => {
   const categories = await Category.findAll();
 
   res.render('products/new.html', {
@@ -68,7 +68,7 @@ router.get('/new', async (req, res) => {
 });
 
 // Add a product
-router.post('/new', upload.single('productImage'), async (req, res) => {
+router.post('/new', upload.single('productImage'), isAdmin, async (req, res) => {
   const {
     title,
     price,
@@ -101,7 +101,7 @@ router.post('/new', upload.single('productImage'), async (req, res) => {
 });
 
 // Edit a product
-router.get('/edit/:slug', async (req, res) => {
+router.get('/edit/:slug', isAdmin, async (req, res) => {
   const categories = await Category.findAll();
   const product = await Product.findOne({ where: { slug: req.params.slug } });
 
@@ -112,7 +112,7 @@ router.get('/edit/:slug', async (req, res) => {
   });
 });
 
-router.put('/edit/:slug', upload.single('productImage'), async (req, res) => {
+router.put('/edit/:slug', upload.single('productImage'), isAdmin, async (req, res) => {
   const product = await Product.findOne({ where: { slug: req.params.slug } });
   const slug = slugify(req.body.title, { strict: true, lower: true });
   const {
@@ -161,7 +161,7 @@ router.put('/edit/:slug', upload.single('productImage'), async (req, res) => {
 });
 
 // Delete product
-router.delete('/delete/:slug', async (req, res) => {
+router.delete('/delete/:slug', isAdmin, async (req, res) => {
   const product = await Product.findOne({ where: { slug: req.params.slug } });
   
   try {
@@ -180,7 +180,7 @@ router.delete('/delete/:slug', async (req, res) => {
 });
 
 // Add new category
-router.post('/category', async (req, res) => {
+router.post('/category', isAdmin, async (req, res) => {
   try {
     const category = await Category.create({
       title: req.body.category,
@@ -191,5 +191,36 @@ router.post('/category', async (req, res) => {
     res.redirect('/products/new');
   }
 });
+
+router.delete('/category/delete/:title', isAdmin, async (req, res) => {
+  const category = await Category.findByPk(req.params.title, {
+    include: Product
+  });
+
+  try {
+    await category.Products.forEach(product => {
+      s3.deleteObject({
+        Bucket: 'ecommerce-template-tommy',
+        Key: product.imagePath
+      }, (err, data) => {
+        if (err) console.log(err);
+      });
+    });
+    await category.destroy();
+
+    res.redirect('/');
+  } catch (err) {
+    res.redirect(`/products/category/${category.title}`); console.log(err);
+  }
+});
+
+// Protect routes for logged in only
+function isAdmin(req, res, next) {
+  if (req.isAuthenticated() && req.user.isAdmin == 1) {
+    return next();
+  }
+
+  res.redirect('/');
+};
 
 module.exports = router;

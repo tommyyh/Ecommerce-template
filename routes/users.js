@@ -10,7 +10,7 @@ const authenticate = require('../config/passport');
 authenticate(passport);
 
 // User account
-router.get('/account', notLoggedIn, async (req, res) => {
+router.get('/account', loggedIn, async (req, res) => {
   res.render('users/users.html', {
     user: req.user,
     req: req
@@ -18,11 +18,13 @@ router.get('/account', notLoggedIn, async (req, res) => {
 });
 
 // Register
-router.get('/register', LoggedIn, (req, res) => {
-  res.render('users/register.html');
+router.get('/register', notLoggedIn, (req, res) => {
+  res.render('users/register.html', {
+    req: req
+  });
 });
 
-router.post('/register', LoggedIn, async (req, res) => {
+router.post('/register', notLoggedIn, async (req, res) => {
   try {
     const { name, email } = req.body;
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -42,24 +44,26 @@ router.post('/register', LoggedIn, async (req, res) => {
 });
 
 // Login
-router.get('/login', LoggedIn, (req, res) => {
-  res.render('users/login.html');
+router.get('/login', notLoggedIn, (req, res) => {
+  res.render('users/login.html', {
+    req: req
+  });
 });
 
-router.post('/login', LoggedIn, passport.authenticate('local', {
+router.post('/login', notLoggedIn, passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/users/login',
   failureFlash: true
 }));
 
 // Logout
-router.delete('/logout', (req, res) => {
+router.delete('/logout', loggedIn, (req, res) => {
   req.logOut();
   res.redirect('/');
 });
 
 // Protect routes for not logged in only
-function LoggedIn(req, res, next) {
+function notLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
     return res.redirect('/');
   }
@@ -68,7 +72,7 @@ function LoggedIn(req, res, next) {
 };
 
 // Protect routes for logged in only
-function notLoggedIn(req, res, next) {
+function loggedIn(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }

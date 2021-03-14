@@ -58,7 +58,9 @@
         <h1>Ecommerce</h1>
         <ul>
           <li><a href="/">Home</a></li>
-          <li><a href="/products/new">Add Product</a></li>
+          <% if (req.isAuthenticated() && req.user.isAdmin == 1) { %>
+            <li><a href="/products/new">Add Product</a></li>
+          <% } %>
           <li><a href="/products/category/laptops">Laptops</a></li>
           <li><a href="/products/category/consoles">Consoles</a></li>
           <li><a href="/products/category/games">Games</a></li>
@@ -77,10 +79,12 @@
       <h3>Brand: <%= product.brand %></h3>
       <h1 class="price">$<%= product.price %></h1>
       <button>Add To Cart</button>
-      <a class="edit-link" href="/products/edit/<%= product.slug %>"><button>Edit Product</button></a>
-      <form action="/products/delete/<%= product.slug %>?_method=DELETE" method="POST">
-        <button style="margin-top: 4px;" type="submit">Remove Product</button>
-      </form>
+      <% if (req.isAuthenticated() && req.user.isAdmin == 1) { %>
+        <a class="edit-link" href="/products/edit/<%= product.slug %>"><button>Edit Product</button></a>
+        <form action="/products/delete/<%= product.slug %>?_method=DELETE" method="POST">
+          <button style="margin-top: 4px;" type="submit">Remove Product</button>
+        </form>
+      <% } %>
     </main>
   </body>
 </html>

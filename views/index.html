@@ -34,7 +34,9 @@
         <h1>Ecommerce</h1>
         <ul>
           <li><a href="/">Home</a></li>
-          <li><a href="/products/new">Add Product</a></li>
+          <% if (req.isAuthenticated() && req.user.isAdmin == 1) { %>
+            <li><a href="/products/new">Add Product</a></li>
+          <% } %>
           <li><a href="/products/category/laptops">Laptops</a></li>
           <li><a href="/products/category/consoles">Consoles</a></li>
           <li><a href="/products/category/games">Games</a></li>

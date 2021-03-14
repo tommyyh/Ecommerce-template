@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <title>Ecommerce | Home page</title>
+    <title>Ecommerce | </title>
     <style>
       body {
         background: #282828;
@@ -19,12 +19,9 @@
         color: lawngreen;
       }
 
-      .products:first-child {
-        margin-left: 0;
-      }
-
-      .products {
-        margin-left: 50px;
+      #logout {
+        width: 80px;
+        height: 30px;
       }
     </style>
   </head>
@@ -47,20 +44,16 @@
       </nav>
     </header>
     <section>
-      <h1 style="margin-top: 55px; font-size: 30px;">Newest Products</h1>
-      <% if (!Object.keys(newestProducts)[0]) { %>
-        <h1>No products available</h1>
-      <% } else { %>
-        <div style="display: flex; margin-top: 50px;">
-          <% newestProducts.forEach(newProduct => { %>
-            <div class="products" style="display: flex; flex-direction: column;">
-              <a href="/products/show/<%= newProduct.slug %>"><img width="150px" height="100px" src="https://ecommerce-template-tommy.s3.eu-central-1.amazonaws.com/<%= newProduct.imagePath %>"></a>
-              <h1 style="font-size: 20px;"><%= newProduct.title %></h1>
-              <h2 style="font-size: 17px;">$<%= newProduct.price %></h2>
-            </div>
-          <% }) %>
-        </div>
-      <% } %>
+      <h1 style="font-size: 45px;">My account</h1>
+      <form action="/users/logout?_method=DELETE" method="POST">
+        <button type="submit" id="logout">Logout</button>
+      </form>
+      <h4 style="margin-top: 75px;">Name: <%= user.name %></h4>
+      <h4>Email: <%= user.email %></h4>
+      <h4>Created At: <%= user.createdAt.toDateString() %></h4>
+    </section>
+    <section style="margin-top: 50px;">
+      <a href="#">Your Orders</a>
     </section>
   </body>
 </html>

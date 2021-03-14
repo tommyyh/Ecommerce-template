@@ -11,7 +11,8 @@ router.get('/', async (req, res) => {
   });
 
   res.render('index.html', {
-    newestProducts
+    newestProducts,
+    req: req
   });
 });
 

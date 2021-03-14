@@ -40,6 +40,7 @@ router.get('/category/:title', async (req, res) => {
 
     res.render('products/products.html', {
       category,
+      req: req
     });
   } catch {
     res.redirect('/');
@@ -51,7 +52,8 @@ router.get('/show/:slug', async (req, res) => {
   const product = await Product.findOne({ where: { slug: req.params.slug } });
 
   res.render('products/show.html', {
-    product
+    product,
+    req: req
   });
 });
 
@@ -61,6 +63,7 @@ router.get('/new', async (req, res) => {
 
   res.render('products/new.html', {
     categories: categories,
+    req: req
   });
 });
 
@@ -104,7 +107,8 @@ router.get('/edit/:slug', async (req, res) => {
 
   res.render('products/edit.html', {
     categories,
-    product
+    product,
+    req: req
   });
 });
 

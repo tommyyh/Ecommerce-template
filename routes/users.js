@@ -1,9 +1,10 @@
 const express = require('express');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
+const { Op } = require('sequelize');
 
 const router = express.Router();
-const { User } = require('../database/associations');
+const { User, Category, Product } = require('../database/associations');
 const authenticate = require('../config/passport');
 
 // Authenticate
@@ -11,16 +12,28 @@ authenticate(passport);
 
 // User account
 router.get('/account', loggedIn, async (req, res) => {
+  const categories = await Category.findAll();
+  const searchedProducts = await Product.findAll({
+    where: {
+      title: { [Op.like]: '%' + req.query.searchField + '%' }
+    }
+  });
+
   res.render('users/users.html', {
     user: req.user,
-    req: req
+    req: req,
+    categories,
+    searchedProducts
   });
 });
 
 // Register
-router.get('/register', notLoggedIn, (req, res) => {
+router.get('/register', notLoggedIn, async (req, res) => {
+  const categories = await Category.findAll();
+
   res.render('users/register.html', {
-    req: req
+    req: req,
+    categories
   });
 });
 
@@ -44,9 +57,12 @@ router.post('/register', notLoggedIn, async (req, res) => {
 });
 
 // Login
-router.get('/login', notLoggedIn, (req, res) => {
+router.get('/login', notLoggedIn, async (req, res) => {
+  const categories = await Category.findAll();
+
   res.render('users/login.html', {
-    req: req
+    req: req,
+    categories
   });
 });
 

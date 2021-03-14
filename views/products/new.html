@@ -29,10 +29,9 @@
           <% if (req.isAuthenticated() && req.user.isAdmin == 1) { %>
             <li><a href="/products/new">Add Product</a></li>
           <% } %>
-          <li><a href="/products/category/laptops">Laptops</a></li>
-          <li><a href="/products/category/consoles">Consoles</a></li>
-          <li><a href="/products/category/games">Games</a></li>
-          <li><a href="/products/category/keyboards">Keyboards</a></li>
+          <% categories.forEach(category => { %>
+            <li><a href="/products/category/<%= category.title %>"><%= category.title %></a></li>
+          <% }) %>
           <% if (!req.isAuthenticated()) { %>
             <li><a href="/users/login">Sign In</a></li>
           <% } %>
@@ -40,6 +39,18 @@
             <li><a href="/users/account">My Account</a></li>
           <% } %>
         </ul>
+        <form action="/" method="GET">
+          <input type="search" name="searchField" value="<%= req.query.searchField %>" placeholder="Search">
+          <button type="submit">Search</button>
+        </form>
+        <% searchedProducts.forEach(product => { %>
+          <div style="margin-top: 50px;">
+            <a href="/products/show/<%= product.slug %>" style="color: #fff; text-decoration: none;">
+              <img id="searchImg" width="50px" height="50px" style="object-fit: cover;" src="https://ecommerce-template-tommy.s3.eu-central-1.amazonaws.com/<%= product.imagePath %>">
+              <h5><%= product.title %></h5>
+            </a>
+          </div>
+        <% }) %>
       </nav>
     </header>
     <h1>Add New Category</h1>

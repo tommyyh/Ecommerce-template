@@ -25,7 +25,7 @@ Order.belongsTo(User);
 Cart.sync();
 Category.sync();
 Order.sync();
-Product.sync({ alter: true });
+Product.sync();
 Review.sync();
 User.sync();
 

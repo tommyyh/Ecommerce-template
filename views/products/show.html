@@ -37,10 +37,6 @@
         margin-top: 35px;
       }
 
-      main .price {
-        margin-top: 65px;
-      }
-
       main button {
         width: 140px;
         height: 40px;
@@ -49,6 +45,10 @@
       .edit-link, .delete-link {
         color: #000;
         text-decoration: none;
+      }
+
+      #old-price {
+        display: flex;
       }
     </style>
   </head>
@@ -65,7 +65,9 @@
           <li><a href="/products/category/consoles">Consoles</a></li>
           <li><a href="/products/category/games">Games</a></li>
           <li><a href="/products/category/keyboards">Keyboards</a></li>
-          <li><a href="/users/login">Sign In</a></li>
+          <% if (!req.isAuthenticated()) { %>
+            <li><a href="/users/login">Sign In</a></li>
+          <% } %>
           <% if (req.isAuthenticated()) { %>
             <li><a href="/users/account">My Account</a></li>
           <% } %>
@@ -77,7 +79,11 @@
       <img width="60%" height="30%" src="https://ecommerce-template-tommy.s3.eu-central-1.amazonaws.com/<%= product.imagePath %>">
       <p><%= product.description %></p>
       <h3>Brand: <%= product.brand %></h3>
-      <h1 class="price">$<%= product.price %></h1>
+      <div id="old-price">
+        <h3 class="price"><del>$<%= product.price %></del></h3>
+        <h3 style="margin-left: 20px;">-<%= product.discount %>%</h3>
+      </div>
+      <h1 style="color: rgb(238, 11, 11);">$<%= Math.round(product.totalPrice * 100) / 100 %></h1>
       <button>Add To Cart</button>
       <% if (req.isAuthenticated() && req.user.isAdmin == 1) { %>
         <a class="edit-link" href="/products/edit/<%= product.slug %>"><button>Edit Product</button></a>

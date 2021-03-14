@@ -28,7 +28,6 @@ const Product = db.define('Product', {
   },
   imagePath: {
     type: DataTypes.STRING,
-    allowNull: true
   },
   quantity: {
     type: DataTypes.INTEGER,
@@ -46,6 +45,12 @@ const Product = db.define('Product', {
       max: 1,
     },
     defaultValue: 1,
+  },
+  totalPrice: {
+    type: DataTypes.FLOAT,
+    get() {
+      return this.price - this.price / 100 * this.discount
+    }
   },
   createdAt: {
     type: DataTypes.DATE,

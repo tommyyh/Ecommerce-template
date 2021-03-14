@@ -7,6 +7,7 @@ const multer = require('multer');
 const multerS3 = require('multer-s3');
 const aws = require('aws-sdk');
 const slugify = require('slugify');
+const { Sequelize } = require('sequelize');
 
 const router = express.Router();
 const { Category, Product } = require('../database/associations');
@@ -49,7 +50,9 @@ router.get('/category/:title', async (req, res) => {
 
 // Show product
 router.get('/show/:slug', async (req, res) => {
-  const product = await Product.findOne({ where: { slug: req.params.slug } });
+  const product = await Product.findOne({
+    where: { slug: req.params.slug },
+  });
 
   res.render('products/show.html', {
     product,
@@ -137,8 +140,6 @@ router.put('/edit/:slug', upload.single('productImage'), isAdmin, async (req, re
         if (err) console.log(err);
       });
     }
-
-    console.log(imagePath);
 
     // Add product to a database
     await Product.update({

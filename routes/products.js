@@ -10,7 +10,7 @@ const slugify = require('slugify');
 const { Op } = require('sequelize');
 
 const router = express.Router();
-const { Category, Product } = require('../database/associations');
+const { Category, Product, Coupon } = require('../database/associations');
 
 // S3 Client
 const s3 = new aws.S3({
@@ -35,17 +35,50 @@ const upload = multer({
 // Home
 router.get('/category/:title', async (req, res) => {
   try {
-    const category = await Category.findByPk(req.params.title, {
-      include: {
-        model: Product
-      },
-    });
+    let orderBy; // Filter options
     const categories = await Category.findAll();
     const searchedProducts = await Product.findAll({
       where: {
         title: { [Op.like]: '%' + req.query.searchField + '%' }
       }
     });
+
+    // Price - asc
+    if (req.query.productFilter == 'priceAsc') {
+      orderBy = [[ Product, 'totalPrice', 'ASC' ]]
+    }
+
+    // Price - desc
+    if (req.query.productFilter == 'priceDesc') {
+      orderBy = [[ Product, 'totalPrice', 'DESC' ]]
+    }
+
+    // Date - asc
+    if (req.query.productFilter == 'dateAsc') {
+      orderBy = [[ Product, 'createdAt', 'ASC' ]]
+    }
+
+    // Date - desc
+    if (req.query.productFilter == 'dataDesc') {
+      orderBy = [[ Product, 'createdAt', 'DESC' ]]
+    }
+
+    // Alphabetical - asc
+    if (req.query.productFilter == 'alphabeticalAsc') {
+      orderBy = [[ Product, 'title', 'ASC' ]]
+    }
+
+    // Alphabetical - desc
+    if (req.query.productFilter == 'alphabeticalDesc') {
+      orderBy = [[ Product, 'title', 'DESC' ]]
+    }
+
+    const category = await Category.findByPk(req.params.title, {
+      include: {
+        model: Product,
+      },
+      order: orderBy
+    })
 
     res.render('products/products.html', {
       category,
@@ -122,12 +155,13 @@ router.post(
         description,
         imagePath,
         discount,
+        totalPrice: price - price / 100 * discount,
         CategoryTitle: req.body.productCategory,
       });
 
       res.redirect(`/products/show/${product.slug}`);
-    } catch {
-      res.redirect('/products/new');
+    } catch (err) {
+      res.redirect('/products/new'); console.log(err);
     }
   }
 );
@@ -193,6 +227,7 @@ router.put(
           description,
           imagePath,
           discount,
+          totalPrice: price - price / 100 * discount,
           CategoryTitle: req.body.productCategory,
           slug: slug,
           createdAt: product.createdAt,
@@ -265,6 +300,22 @@ router.delete('/category/delete/:title', isAdmin, async (req, res) => {
   } catch (err) {
     res.redirect(`/products/category/${category.title}`);
     console.log(err);
+  }
+});
+
+// Add coupon
+router.post('/coupon', isAdmin, async (req, res) => {
+  const { coupon, couponDiscount } = req.body;
+
+  try {
+    await Coupon.create({
+      title: coupon,
+      discount: couponDiscount
+    });
+
+    res.redirect('/');
+  } catch {
+    res.redirect('/products/new');
   }
 });
 

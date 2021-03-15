@@ -4,6 +4,7 @@ const Order = require('../models/Order');
 const Product = require('../models/Product');
 const Review = require('../models/Review');
 const User = require('../models/User');
+const Coupon = require('../models/Coupon');
 
 // User + Cart
 User.hasOne(Cart);
@@ -25,9 +26,10 @@ Order.belongsTo(User);
 Cart.sync();
 Category.sync();
 Order.sync();
-Product.sync();
+Product.sync({ alter: true });
 Review.sync();
 User.sync();
+Coupon.sync();
 
 module.exports = {
   Cart,
@@ -36,4 +38,5 @@ module.exports = {
   Product,
   Review,
   User,
+  Coupon
 };

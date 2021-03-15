@@ -55,6 +55,45 @@
     </header>
     <main style="margin-top: 65px;">
       <h1 style="font-size: 50px;"><%= category.title %></h1>
+      <section>
+        <form action="/products/category/<%= category.title %>" method="GET">
+          <select name="productFilter" onchange="this.form.submit()">
+            <% if (!req.query.productFilter) { %>
+              <option value="" style="display: none;" disabled selected>Filter</option>
+            <% } %>
+            <% if (req.query.productFilter == 'priceAsc') { %>
+              <option selected value="priceAsc">Price: From lowest</option>
+            <% } else { %>
+              <option value="priceAsc">Price: From lowest</option>
+            <% } %>
+            <% if (req.query.productFilter == 'priceDesc') { %>
+              <option selected value="priceDesc">Price: From highest</option>
+            <% } else { %>
+              <option value="priceDesc">Price: From highest</option>
+            <% } %>
+            <% if (req.query.productFilter == 'dataDesc') { %>
+              <option selected value="dataDesc">Date: Newest</option>
+            <% } else { %>
+              <option value="dataDesc">Date: Newest</option>
+            <% } %>
+            <% if (req.query.productFilter == 'dateAsc') { %>
+              <option selected value="dateAsc">Date: Oldest</option>
+            <% } else { %>
+              <option value="dateAsc">Date: Oldest</option>
+            <% } %>
+            <% if (req.query.productFilter == 'alphabeticalAsc') { %>
+              <option selected value="alphabeticalAsc">Alphabetical: A-Z</option>
+            <% } else { %>
+              <option value="alphabeticalAsc">Alphabetical: A-Z</option>
+            <% } %>
+            <% if (req.query.productFilter == 'alphabeticalDesc') { %>
+              <option selected value="alphabeticalDesc">Alphabetical: Z-A</option>
+            <% } else { %>
+              <option value="alphabeticalDesc">Alphabetical: Z-A</option>
+            <% } %>
+          </select>
+        </form>
+      </section>
       <% if (req.isAuthenticated() && req.user.isAdmin == 1) { %>
         <form action="/products/category/delete/<%= category.title %>?_method=DELETE" method="POST">
           <button type="submit">Delete Category</button>

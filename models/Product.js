@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes, INTEGER } = require('sequelize');
 const SequelizeSlugify = require('sequelize-slugify');
 
 const db = require('../database/database');
@@ -48,14 +48,15 @@ const Product = db.define('Product', {
   },
   totalPrice: {
     type: DataTypes.FLOAT,
-    get() {
-      return this.price - this.price / 100 * this.discount
-    }
   },
   createdAt: {
     type: DataTypes.DATE,
     allowNull: false,
     defaultValue: Date.now,
+  },
+  timesBought: {
+    type: INTEGER,
+    defaultValue: 0
   },
   slug: {
     type: DataTypes.STRING,

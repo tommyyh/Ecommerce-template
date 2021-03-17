@@ -43,6 +43,7 @@
           <% if (req.isAuthenticated()) { %>
             <li><a href="/users/account">My Account</a></li>
           <% } %>
+          <li><a href="/cart">Cart</a></li>
         </ul>
         <form action="/" method="GET">
           <input type="search" name="searchField" value="<%= req.query.searchField %>" placeholder="Search">

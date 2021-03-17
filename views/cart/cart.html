@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <title>Ecommerce | Home page</title>
+    <title>Ecommerce | Cart</title>
     <style>
       body {
         background: #282828;
@@ -25,6 +25,13 @@
 
       .products {
         margin-left: 50px;
+      }
+
+      #quantity {
+        width: 56px;
+        height: 25px;
+        border-radius: 3px;
+        border: 1px #fff solid;
       }
     </style>
   </head>
@@ -62,28 +69,56 @@
         <% }) %>
       </nav>
     </header>
-    <section>
-      <h1 style="margin-top: 80px; font-size: 30px;">Newest Products</h1>
-      <% if (!Object.keys(newestProducts)[0]) { %>
-        <h1>No products available</h1>
+    <main>
+      <h1 style="margin-top: 75px;">Shopping Cart</h1>
+      <% if (!cart.cartProducts[0]) { %>
+        <hr>
+        <h1 style="margin-top: 10px;">Your cart is empty</h1>
+        <a style="margin-top: 50px;" href="/">Continue shopping</a>
       <% } else { %>
-        <div style="display: flex; margin-top: 50px;">
-          <% newestProducts.forEach(newProduct => { %>
-            <div class="products" style="display: flex; flex-direction: column;">
-              <a href="/products/show/<%= newProduct.slug %>"><img width="150px" height="100px" src="https://ecommerce-template-tommy.s3.eu-central-1.amazonaws.com/<%= newProduct.imagePath %>"></a>
-              <h1 style="font-size: 20px;"><%= newProduct.title %></h1>
-              <% if (!newProduct.discount == 0) { %>
-                <div style="display: flex;">
-                  <h4><del>$<%= newProduct.price %></del></h4>
-                  <h4 style="margin-left: 20px; color: red;">$<%= newProduct.totalPrice %></h4>
-                </div>
-              <% } else { %>
-                <h2 style="font-size: 17px;">$<%= newProduct.price %></h2>
-              <% } %>
-            </div>
-          <% }) %>
+        <% cart.cartProducts.forEach(cartProduct => { %>
+          <hr>
+          <div style="margin-top: 50px;">
+            <a href="/products/show/<%= cartProduct.slug %>">
+              <img width="75px" height="75px" style="object-fit: cover;" src="https://ecommerce-template-tommy.s3.eu-central-1.amazonaws.com/<%= cartProduct.imagePath %>">
+            </a>
+            <h2><%= cartProduct.title %></h2>
+            <h4>$<%= cartProduct.totalPrice %></h4>
+            <% if (cartProduct.available == 1) { %>
+              <h5 style="color: lawngreen;">Available</h5>
+            <% } else { %>
+              <h5 style="color: red;">Not Available</h5>
+            <% } %>
+            <form action="/cart/update-quantity/<%= cartProduct.slug %>?_method=PUT" method="POST">
+              <input
+              type="number"
+              name="cartProductQuantity" 
+              id="quantity"
+              value="<%= cartProduct.quantity %>"
+              onchange="this.form.submit()"
+            >
+            </form>
+            <form action="/cart/remove-item/<%= cartProduct.slug %>?_method=DELETE" method="POST">
+              <button style="height: 30px; border-radius: 3px; border: 1px #000 solid; margin-top: 2px;" type="submit">Remove</button>
+            </form>
+          </div>
+        <% }) %>
+        <hr>
+        <div style="margin-top: 50px;">
+          <div style="display: flex;">
+            <input
+            type="text"
+            name="coupon"
+            placeholder="Coupon"
+          >
+          <button type="submit">Apply</button>
+          </div>
+          <div style="margin-top: 30px;">
+            <h1>Total: $<%= cart.totalPrice %></h1>
+            <button>Checkout</button>
+          </div>
         </div>
       <% } %>
-    </section>
+    </main>
   </body>
 </html>

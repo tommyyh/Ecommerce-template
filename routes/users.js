@@ -1,10 +1,14 @@
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
 const express = require('express');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const { Op } = require('sequelize');
 
 const router = express.Router();
-const { User, Category, Product } = require('../database/associations');
+const { User, Category, Product, Cart } = require('../database/associations');
 const authenticate = require('../config/passport');
 
 // Authenticate
@@ -41,11 +45,15 @@ router.post('/register', notLoggedIn, async (req, res) => {
   try {
     const { name, email } = req.body;
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-  
+
     const user = await User.create({
       name,
       email,
       password: hashedPassword
+    });
+
+    await Cart.create({
+      UserId: user.id
     });
 
     res.redirect('/users/login');

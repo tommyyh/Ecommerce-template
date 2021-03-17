@@ -1,10 +1,9 @@
 const { DataTypes, INTEGER } = require('sequelize');
-const SequelizeSlugify = require('sequelize-slugify');
 
 const db = require('../database/database');
 
-// Product model
-const Product = db.define('Product', {
+// Cart products model
+const cartProducts = db.define('cartProducts', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -38,6 +37,18 @@ const Product = db.define('Product', {
     allowNull: true,
     defaultValue: 0,
   },
+  discountedPrice: {
+    type: DataTypes.FLOAT,
+    defaultValue: 0
+  },
+  totalPrice: {
+    type: DataTypes.FLOAT,
+    defaultValue: 0,
+    allowNull: true
+  },
+  timesBought: {
+    type: DataTypes.INTEGER,
+  },
   available: {
     type: DataTypes.TINYINT,
     validate: {
@@ -46,30 +57,9 @@ const Product = db.define('Product', {
     },
     defaultValue: 1,
   },
-  totalPrice: {
-    type: DataTypes.FLOAT,
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue: Date.now,
-  },
-  timesBought: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0
-  },
   slug: {
     type: DataTypes.STRING,
-    unique: true,
   },
 });
 
-// Slugify title
-SequelizeSlugify.slugifyModel(Product, {
-  source: ['title'],
-  slugOptions: { lower: true, strict: true },
-  column: 'slug',
-  incrementalSeparator: '-',
-});
-
-module.exports = Product;
+module.exports = cartProducts;

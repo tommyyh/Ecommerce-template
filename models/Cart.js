@@ -11,14 +11,19 @@ const Cart = db.define('Cart', {
   },
   price: {
     type: DataTypes.FLOAT,
+    allowNull: true,
+    defaultValue: 0
   },
   discount: {
     type: DataTypes.INTEGER,
     allowNull: true,
+    defaultValue: 0
   },
-  quantity: {
-    type: DataTypes.INTEGER,
-  },
+  totalPrice: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+    defaultValue: 0
+  }
 });
 
 module.exports = Cart;

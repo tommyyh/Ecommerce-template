@@ -5,6 +5,7 @@ const Product = require('../models/Product');
 const Review = require('../models/Review');
 const User = require('../models/User');
 const Coupon = require('../models/Coupon');
+const CartProducts = require('../models/CartProducts');
 
 // User + Cart
 User.hasOne(Cart);
@@ -22,14 +23,19 @@ Review.belongsTo(User);
 User.hasMany(Order);
 Order.belongsTo(User);
 
+// Cart products + cart
+Cart.hasMany(CartProducts);
+CartProducts.belongsTo(Cart);
+
 // Create table
 Cart.sync();
 Category.sync();
 Order.sync();
-Product.sync({ alter: true });
+Product.sync();
 Review.sync();
 User.sync();
 Coupon.sync();
+CartProducts.sync();
 
 module.exports = {
   Cart,
@@ -38,5 +44,6 @@ module.exports = {
   Product,
   Review,
   User,
-  Coupon
+  Coupon,
+  CartProducts
 };

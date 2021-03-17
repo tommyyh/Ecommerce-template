@@ -41,6 +41,7 @@ app.use(methodOverride('_method'));
 app.use('/', require('./routes/index')); // Home routes
 app.use('/products', require('./routes/products')); // Product routes
 app.use('/users', require('./routes/users')); // User routes
+app.use('/cart', require('./routes/cart')); // Cart routes
 
 // Port
 const port = process.env.PORT || 3000;

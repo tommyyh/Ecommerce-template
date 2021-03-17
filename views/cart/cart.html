@@ -74,7 +74,6 @@
       <% if (!cart.cartProducts[0]) { %>
         <hr>
         <h1 style="margin-top: 10px;">Your cart is empty</h1>
-        <a style="margin-top: 50px;" href="/">Continue shopping</a>
       <% } else { %>
         <% cart.cartProducts.forEach(cartProduct => { %>
           <hr>
@@ -106,19 +105,39 @@
         <hr>
         <div style="margin-top: 50px;">
           <div style="display: flex;">
-            <input
-            type="text"
-            name="coupon"
-            placeholder="Coupon"
-          >
-          <button type="submit">Apply</button>
+            <% if (!cart.discount) { %>
+              <form action="/cart/add-coupon" method="POST">
+                <input
+                type="text"
+                name="coupon"
+                placeholder="Coupon"
+                >
+                <button type="submit">Apply</button>
+              </form>
+            <% } else { %>
+              <form action="/cart/remove-coupon?_method=DELETE" method="POST">
+                <input
+                type="text"
+                name="coupon"
+                value="<%= cart.discount %>% off"
+                disabled
+                >
+                <button type="submit">Remove</button>
+              </form>
+            <% } %>
           </div>
+          <% if (locals.invalidCoupon) { %>
+            <h3><%= invalidCoupon %></h3>
+          <% } %>
           <div style="margin-top: 30px;">
             <h1>Total: $<%= cart.totalPrice %></h1>
-            <button>Checkout</button>
+            <button style="width: 150px; height: 50px;">Checkout</button>
           </div>
         </div>
       <% } %>
     </main>
+    <div style="margin-top: 100px;">
+      <a href="/">Continue shopping</a>
+    </div>
   </body>
 </html>

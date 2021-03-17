@@ -2,7 +2,7 @@ const express = require('express');
 const { Op } = require('sequelize');
 
 const router = express.Router();
-const { Category, Product, User, Cart, CartProducts } = require('../database/associations');
+const { Category, Product, User, Cart, CartProducts, Coupon } = require('../database/associations');
 
 // Cart route
 router.get('/', async (req, res) => {
@@ -44,13 +44,10 @@ router.post('/add-to-cart/:slug', async (req, res) => {
         await CartProducts.create({
           title: product.title,
           price: product.price,
-          brand: product.brand,
-          description: product.description,
           imagePath: product.imagePath,
           quantity: req.body.quantity,
           discount: product.discount,
           discountedPrice: product.totalPrice,
-          timesBought: product.timesBought,
           available: product.available,
           slug: product.slug,
           CartId: user.Cart.id
@@ -131,18 +128,69 @@ router.delete('/remove-item/:slug', async (req, res) => {
   try {
     // Remove product
     await cartProduct.destroy();
+
     // Updating price
     await cart.update({
       price: cart.price - cartProduct.totalPrice
     });
+
     // Updating total price
     await cart.update({
-      totalPrice: cart.price - cart.price / 100 * cart.discount
+      totalPrice: cart.price - (cart.price / 100 * cart.discount)
     });
 
     res.redirect('/cart');
   } catch {
     res.redirect('/cart');
+  }
+});
+
+// Apply coupon code
+router.post('/add-coupon', async (req, res) => {
+  const cart = await Cart.findOne({ where: { id: req.user.id } });
+  const coupon = await Coupon.findOne({ where: { title: req.body.coupon } });
+
+  try {
+    if (!coupon) {
+      res.render('cart/cart.html', {
+        invalidCoupon: 'Invalid Coupon'
+      });
+    } else {
+      // Add coupon
+      await cart.update({
+        discount: coupon.discount
+      });
+
+      // Calculate price - discount
+      await cart.update({
+        totalPrice: cart.totalPrice - (cart.totalPrice / 100 * cart.discount)
+      });
+    }
+
+    res.redirect('/cart');
+  } catch {
+    res.redirect('/');
+  }
+});
+
+// Remove coupon
+router.delete('/remove-coupon', async (req, res) => {
+  const cart = await Cart.findOne({ where: { id: req.user.id } });
+
+  try {
+    // Remove coupon
+    await cart.update({
+      discount: 0
+    });
+
+    // Calculate price
+    await cart.update({
+      totalPrice: cart.price - (cart.price / 100 * cart.discount)
+    });
+
+    res.redirect('/cart');
+  } catch {
+    res.redirect('/');
   }
 });
 

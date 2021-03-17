@@ -17,14 +17,6 @@ const cartProducts = db.define('cartProducts', {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
-  brand: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  description: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
   imagePath: {
     type: DataTypes.STRING,
   },
@@ -45,9 +37,6 @@ const cartProducts = db.define('cartProducts', {
     type: DataTypes.FLOAT,
     defaultValue: 0,
     allowNull: true
-  },
-  timesBought: {
-    type: DataTypes.INTEGER,
   },
   available: {
     type: DataTypes.TINYINT,

@@ -103,7 +103,7 @@
       <form action="/cart/add-to-cart/<%= product.slug %>" method="POST">
         <div style="margin-top: 75px;">
           <h3>Quantity</h3>
-          <input type="number" name="quantity" value="<%= product.quantity %>">
+          <input type="number" name="quantity" value="<%= product.quantity %>" oninput="if (this.value < 1) this.value = 1">
         </div>
         <button style="margin-top: 30px;" type="submit">Add To Cart</button>
       </form>

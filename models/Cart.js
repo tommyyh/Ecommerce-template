@@ -87,6 +87,20 @@ class AnonymousCart {
     // Update total price
     this.totalPrice = this.price - (this.price / 100 * this.discount)
   }
+
+  applyCoupon(discount) {
+    // Add discount
+    this.discount = discount;
+
+    // Calculate total price
+    this.totalPrice = this.price - (this.price / 100 * this.discount);
+  }
+
+  removeCoupon() {
+    this.discount = 0;
+
+    this.totalPrice = this.price - (this.price / 100 * this.discount);
+  }
 };
 
 module.exports = {

@@ -71,69 +71,113 @@
     </header>
     <main>
       <h1 style="margin-top: 75px;">Shopping Cart</h1>
-      <% if (!cart.cartProducts[0]) { %>
-        <hr>
-        <h1 style="margin-top: 10px;">Your cart is empty</h1>
-      <% } else { %>
-        <% cart.cartProducts.forEach(cartProduct => { %>
+      <% if (req.isAuthenticated()) { %>
+        <% if (!cart.cartProducts[0]) { %>
+          <hr>
+          <h1 style="margin-top: 10px;">Your cart is empty</h1>
+        <% } else { %>
+          <% cart.cartProducts.forEach(cartProduct => { %>
+            <hr>
+            <div style="margin-top: 50px;">
+              <a href="/products/show/<%= cartProduct.slug %>">
+                <img width="75px" height="75px" style="object-fit: cover;" src="https://ecommerce-template-tommy.s3.eu-central-1.amazonaws.com/<%= cartProduct.imagePath %>">
+              </a>
+              <h2><%= cartProduct.title %></h2>
+              <h4>$<%= cartProduct.totalPrice %></h4>
+              <% if (cartProduct.available == 1) { %>
+                <h5 style="color: lawngreen;">Available</h5>
+              <% } else { %>
+                <h5 style="color: red;">Not Available</h5>
+              <% } %>
+              <form action="/cart/update-quantity/<%= cartProduct.slug %>?_method=PUT" method="POST">
+                <input
+                type="number"
+                name="cartProductQuantity" 
+                id="quantity"
+                min="0"
+                value="<%= cartProduct.quantity %>"
+                onkeyup="if (this.value<0) this.value= this.value * -1"
+                onchange="this.form.submit()"
+              >
+              </form>
+              <form action="/cart/remove-item/<%= cartProduct.slug %>?_method=DELETE" method="POST">
+                <button style="height: 30px; border-radius: 3px; border: 1px #000 solid; margin-top: 2px;" type="submit">Remove</button>
+              </form>
+            </div>
+          <% }) %>
           <hr>
           <div style="margin-top: 50px;">
-            <a href="/products/show/<%= cartProduct.slug %>">
-              <img width="75px" height="75px" style="object-fit: cover;" src="https://ecommerce-template-tommy.s3.eu-central-1.amazonaws.com/<%= cartProduct.imagePath %>">
-            </a>
-            <h2><%= cartProduct.title %></h2>
-            <h4>$<%= cartProduct.totalPrice %></h4>
-            <% if (cartProduct.available == 1) { %>
-              <h5 style="color: lawngreen;">Available</h5>
-            <% } else { %>
-              <h5 style="color: red;">Not Available</h5>
+            <div style="display: flex;">
+              <% if (!cart.discount) { %>
+                <form action="/cart/add-coupon" method="POST">
+                  <input
+                  type="text"
+                  name="coupon"
+                  placeholder="Coupon"
+                  >
+                  <button type="submit">Apply</button>
+                </form>
+              <% } else { %>
+                <form action="/cart/remove-coupon?_method=DELETE" method="POST">
+                  <input
+                  type="text"
+                  name="coupon"
+                  value="<%= cart.discount %>% off"
+                  disabled
+                  >
+                  <button type="submit">Remove</button>
+                </form>
+              <% } %>
+            </div>
+            <% if (locals.invalidCoupon) { %>
+              <h3><%= invalidCoupon %></h3>
             <% } %>
-            <form action="/cart/update-quantity/<%= cartProduct.slug %>?_method=PUT" method="POST">
-              <input
-              type="number"
-              name="cartProductQuantity" 
-              id="quantity"
-              value="<%= cartProduct.quantity %>"
-              onchange="this.form.submit()"
-            >
-            </form>
-            <form action="/cart/remove-item/<%= cartProduct.slug %>?_method=DELETE" method="POST">
-              <button style="height: 30px; border-radius: 3px; border: 1px #000 solid; margin-top: 2px;" type="submit">Remove</button>
-            </form>
+            <div style="margin-top: 30px;">
+              <h1>Total: $<%= cart.totalPrice %></h1>
+              <button style="width: 150px; height: 50px;">Checkout</button>
+            </div>
           </div>
-        <% }) %>
-        <hr>
-        <div style="margin-top: 50px;">
-          <div style="display: flex;">
-            <% if (!cart.discount) { %>
-              <form action="/cart/add-coupon" method="POST">
+        <% } %>
+      <% } else { %>
+        <% if (!cart.listOfProducts[0]) { %>
+          <hr>
+          <h1 style="margin-top: 10px;">Your cart is empty</h1>
+        <% } else { %>
+          <% cart.listOfProducts.forEach(product => { %>
+            <hr>
+            <div style="margin-top: 50px;">
+              <a href="/products/show/<%= product.product.slug %>">
+                <img width="75px" height="75px" style="object-fit: cover;" src="https://ecommerce-template-tommy.s3.eu-central-1.amazonaws.com/<%= product.product.imagePath %>">
+              </a>
+              <h2><%= product.product.title %></h2>
+              <h4><%= product.price %></h4>
+              <% if (product.product.available == 1) { %>
+                <h5 style="color: lawngreen;">Available</h5>
+              <% } else { %>
+                <h5 style="color: red;">Not Available</h5>
+              <% } %>
+              <form action="/cart/update-quantity/<%= product.product.slug %>?_method=PUT" method="POST">
                 <input
-                type="text"
-                name="coupon"
-                placeholder="Coupon"
-                >
-                <button type="submit">Apply</button>
+                type="number"
+                name="updateCartQuantity"
+                id="quantity"
+                min="0"
+                value="<%= product.quantity %>"
+                onkeyup="if (this.value<0) this.value= this.value * -1"
+                onchange="this.form.submit()"
+              >
               </form>
-            <% } else { %>
-              <form action="/cart/remove-coupon?_method=DELETE" method="POST">
-                <input
-                type="text"
-                name="coupon"
-                value="<%= cart.discount %>% off"
-                disabled
-                >
-                <button type="submit">Remove</button>
+              <form action="/cart/remove-item/<%= product.product.slug %>?_method=DELETE" method="POST">
+                <button style="height: 30px; border-radius: 3px; border: 1px #000 solid; margin-top: 2px;" type="submit">Remove</button>
               </form>
-            <% } %>
-          </div>
-          <% if (locals.invalidCoupon) { %>
-            <h3><%= invalidCoupon %></h3>
-          <% } %>
+            </div>
+          <% }) %>
           <div style="margin-top: 30px;">
-            <h1>Total: $<%= cart.totalPrice %></h1>
+            <h1>Total: $<%= cart.price %></h1>
             <button style="width: 150px; height: 50px;">Checkout</button>
           </div>
         </div>
+        <% } %>
       <% } %>
     </main>
     <div style="margin-top: 100px;">

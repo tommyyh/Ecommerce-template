@@ -44,6 +44,17 @@ app.use('/users', require('./routes/users')); // User routes
 app.use('/cart', require('./routes/cart')); // Cart routes
 app.use('/checkout', require('./routes/checkout')); // Checkout routes
 
+// 404 Page
+app.use((req, res) => {
+  res.status(404);
+
+  // Respond with html
+  if (req.accepts('html')) {
+    res.render('404.html');
+    return
+  }
+});
+
 // Port
 const port = process.env.PORT || 3000;
 

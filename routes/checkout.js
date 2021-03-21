@@ -7,7 +7,7 @@ const { Op } = require('sequelize');
 const stripe = require('stripe')(process.env.STRIPE_SK);
 
 const router = express.Router();
-const { Category, Product, User, Order, Cart, CartProducts } = require('../database/associations');
+const { Category, Product, User, Order, Cart, CartProducts, OrderItems } = require('../database/associations');
 
 // Checkout
 router.get('/shipping-information', checkoutAccess, async (req, res) => {
@@ -123,9 +123,13 @@ router.get('/success', async (req, res) => {
       title: { [Op.like]: '%' + req.query.searchField + '%' }
     }
   });
+  const cart = await Cart.findOne({
+    where: { UserId: req.user.id },
+    include: CartProducts
+  });
 
   // If success page renders -> save order
-  await Order.create({
+  const newOrder = await Order.create({
     price: order.price,
     addressLine1: order.addressLine1,
     addressLine2: order.addressLine2,
@@ -138,6 +142,26 @@ router.get('/success', async (req, res) => {
     city: order.city,
     discount: order.discount,
     UserId: order.UserId
+  });
+
+  // Add bought products
+  cart.cartProducts.forEach(async cartProduct => {
+    await OrderItems.create({
+      title: cartProduct.title,
+      imagePath: cartProduct.imagePath,
+      quantity: cartProduct.quantity,
+      totalPrice: cartProduct.discountedPrice,
+      slug: cartProduct.slug,
+      OrderId: newOrder.id,
+    });
+  });
+
+  // Clear cart
+  await cart.destroy();
+
+  // Create a new cart
+  await Cart.create({
+    UserId: req.user.id
   });
 
   res.render('checkout/success.html', {

@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt');
 const { Op } = require('sequelize');
 
 const router = express.Router();
-const { User, Category, Product, Cart } = require('../database/associations');
+const { User, Category, Product, Cart, Order, OrderItems } = require('../database/associations');
 const authenticate = require('../config/passport');
 
 // Authenticate
@@ -22,12 +22,17 @@ router.get('/account', loggedIn, async (req, res) => {
       title: { [Op.like]: '%' + req.query.searchField + '%' }
     }
   });
+  const orders = await Order.findAll({
+    where: { UserId: req.user.id },
+    order: [[ 'createdAt', 'DESC' ]]
+  });
 
   res.render('users/users.html', {
     user: req.user,
     req: req,
     categories,
-    searchedProducts
+    searchedProducts,
+    orders
   });
 });
 
@@ -84,6 +89,27 @@ router.post('/login', notLoggedIn, passport.authenticate('local', {
 router.delete('/logout', loggedIn, (req, res) => {
   req.logOut();
   res.redirect('/');
+});
+
+// My orders
+router.get('/my-orders/:id', async (req, res) => {
+  const order = await Order.findOne({
+    where: { id: req.params.id },
+    include: OrderItems
+  });
+  const categories = await Category.findAll();
+  const searchedProducts = await Product.findAll({
+    where: {
+      title: { [Op.like]: '%' + req.query.searchField + '%' }
+    }
+  });
+
+  res.render('users/orders.html', {
+    order,
+    searchedProducts,
+    categories,
+    req: req
+  })
 });
 
 // Protect routes for not logged in only

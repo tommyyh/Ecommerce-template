@@ -29,7 +29,7 @@ Order.hasMany(OrderItems);
 OrderItems.belongsTo(Order);
 
 // Cart products + cart
-Cart.hasMany(CartProducts);
+Cart.hasMany(CartProducts, { onDelete: 'CASCADE' });
 CartProducts.belongsTo(Cart);
 
 // Create table

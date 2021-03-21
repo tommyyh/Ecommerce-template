@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <title>Ecommerce | </title>
+    <title>Ecommerce | Orders</title>
     <style>
       body {
         background: #282828;
@@ -59,25 +59,34 @@
         <% }) %>
       </nav>
     </header>
-    <section>
-      <h1 style="font-size: 45px;">Your account</h1>
-      <form action="/users/logout?_method=DELETE" method="POST">
-        <button type="submit" id="logout">Logout</button>
-      </form>
-      <h4 style="margin-top: 75px;">Name: <%= user.name %></h4>
-      <h4>Email: <%= user.email %></h4>
-      <h4>Created At: <%= user.createdAt.toDateString() %></h4>
-    </section>
-    <section style="margin-top: 50px;">
-      <h2>Your orders</h2>
-      <% orders.forEach(order => { %>
+    <main>
+      <h1 style="margin-top: 75px;">Order no.: <%= order.id %></h1>
+      <div style="margin-top: 25px;">
+        <h3>Ordered at: <%= order.createdAt.toDateString() %></h3>
         <hr>
-        <a href="/users/my-orders/<%= order.id %>">
-          <h2>Id: <%= order.id %></h2>
-        </a>
-        <h3>Created at: <%= order.createdAt.toDateString() %></h3>
-        <h3>Total ammount: $<%= order.price %></h3>
-      <% }) %>
-    </section>
+      </div>
+      <div style="margin-top: 50px;">
+        <% order.OrderItems.forEach(orderItem => { %>
+          <div>
+            <a href="/products/show/<%= orderItem.slug %>"><img width="275px" height="175px" src="https://ecommerce-template-tommy.s3.eu-central-1.amazonaws.com/<%= orderItem.imagePath %>"></a>
+            <h2><%= orderItem.title %></h2>
+            <h2>Price: $<%= orderItem.totalPrice %></h2>
+          </div>
+          <hr>
+        <% }) %>
+        <h1 style="margin-top: 25px;">Total Price: <%= order.price %></h1>
+      </div>
+      <div style="margin-top: 75px;">
+        <h2>Shipping Informations</h2>
+        <h4>Name: <%= order.name %></h4>
+        <h4>Phone number: <%= order.phone %></h4>
+        <h4>Email: <%= order.email %></h4>
+        <h4>Address Line 1: <%= order.addressLine1 %></h4>
+        <h4>Address Line 1: <%= order.addressLine2 %></h4>
+        <h4>Zip code: <%= order.zipCode %></h4>
+        <h4>Country: <%= order.country %></h4>
+        <h4>City: <%= order.city %></h4>
+      </div>
+    </main>
   </body>
 </html>

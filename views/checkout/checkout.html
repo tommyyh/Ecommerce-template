@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <title>Ecommerce | Checkout</title>
+    <style>
+      body {
+        background: #282828;
+        color: #fff;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 100;
+      }
+  
+      a {
+        color: lawngreen;
+      }
+
+      .products:first-child {
+        margin-left: 0;
+      }
+
+      .products {
+        margin-left: 50px;
+      }
+
+      #quantity {
+        width: 56px;
+        height: 25px;
+        border-radius: 3px;
+        border: 1px #fff solid;
+      }
+
+      #checkout-title {
+        margin-top: 4rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <h1>Ecommerce</h1>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <% if (req.isAuthenticated() && req.user.isAdmin == 1) { %>
+            <li><a href="/products/new">Add Product</a></li>
+          <% } %>
+          <% categories.forEach(category => { %>
+            <li><a href="/products/category/<%= category.title %>"><%= category.title %></a></li>
+          <% }) %>
+          <% if (!req.isAuthenticated()) { %>
+            <li><a href="/users/login">Sign In</a></li>
+          <% } %>
+          <% if (req.isAuthenticated()) { %>
+            <li><a href="/users/account">My Account</a></li>
+          <% } %>
+          <li><a href="/cart">Cart</a></li>
+        </ul>
+        <form action="/" method="GET">
+          <input type="search" name="searchField" value="<%= req.query.searchField %>" placeholder="Search">
+          <button type="submit">Search</button>
+        </form>
+        <% searchedProducts.forEach(product => { %>
+          <div style="margin-top: 50px;">
+            <a href="/products/show/<%= product.slug %>" style="color: #fff; text-decoration: none;">
+              <img id="searchImg" width="50px" height="50px" style="object-fit: cover;" src="https://ecommerce-template-tommy.s3.eu-central-1.amazonaws.com/<%= product.imagePath %>">
+              <h5><%= product.title %></h5>
+            </a>
+          </div>
+        <% }) %>
+      </nav>
+      <hr>
+    </header>
+    <% if (req.isAuthenticated()) { %>
+      <main style="margin-top: 65px;">
+        <h1>Checkout</h1>
+        <h3 style="margin-top: 40px;">Shipping information</h3>
+        <form action="/checkout/shipping-information" method="POST">
+          <div>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email:"
+              value="<%= user.email %>"
+              required
+            >
+          </div>
+          <div>
+            <input
+              type="text"
+              name="name"
+              placeholder="Full Name:"
+              value="<%= user.name %>"
+              required
+            >
+          </div>
+          <div>
+            <input
+              type="text"
+              name="addressLine1"
+              placeholder="Address Line 1:"
+              required
+            >
+          </div>
+          <div>
+            <input
+              type="text"
+              name="addressLine2"
+              placeholder="Address Line 2: (Optional)"
+            >
+          </div>
+          <div>
+            <input
+              type="text"
+              name="city"
+              placeholder="City:"
+              required
+            >
+          </div>
+          <div>
+            <input
+              type="text"
+              name="country"
+              placeholder="Country:"
+              required
+            >
+          </div>
+          <div>
+            <input
+              type="number"
+              name="zipCode"
+              placeholder="Zip code:"
+              required
+            >
+          </div>
+          <div>
+            <input
+              type="text"
+              name="companyName"
+              placeholder="Company name: (Optional)"
+            >
+          </div>
+          <div>
+            <input
+              type="tel"
+              name="phoneNumber"
+              placeholder="Phone number:"
+              required
+            >
+          </div>
+          <button style="margin-top: 15px;" type="submit">Continue To Payment</button>
+        </form>
+      </main>
+    <% } else { %>
+      <main style="margin-top: 65px;">
+        <h1>Guest checkout</h1>
+        <h3 style="margin-top: 40px;">Shipping information</h3>
+        <form action="/checkout/shipping-information" method="POST">
+          <div>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email:"
+              required
+            >
+          </div>
+          <div>
+            <input
+              type="text"
+              name="name"
+              placeholder="Full Name:"
+              required
+            >
+          </div>
+          <div>
+            <input
+              type="text"
+              name="addressLine1"
+              placeholder="Address Line 1:"
+              required
+            >
+          </div>
+          <div>
+            <input
+              type="text"
+              name="addressLine2"
+              placeholder="Address Line 2: (Optional)"
+            >
+          </div>
+          <div>
+            <input
+              type="text"
+              name="city"
+              placeholder="City:"
+              required
+            >
+          </div>
+          <div>
+            <input
+              type="text"
+              name="country"
+              placeholder="Country:"
+              required
+            >
+          </div>
+          <div>
+            <input
+              type="number"
+              name="zipCode"
+              placeholder="Zip code:"
+              required
+            >
+          </div>
+          <div>
+            <input
+              type="text"
+              name="companyName"
+              placeholder="Company name: (Optional)"
+            >
+          </div>
+          <div>
+            <input
+              type="tel"
+              name="phoneNumber"
+              placeholder="Phone number:"
+              required
+            >
+          </div>
+          <button style="margin-top: 15px;" type="submit">Continue To Payment</button>
+        </form>
+      </main>
+    <% } %>
+  </body>
+</html>

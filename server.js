@@ -25,7 +25,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 999 * 999 * 999 * 999 * 1000
+    maxAge: 1500 * 24 * 60 * 60 * 1000
   }
 }));
 app.use(flash());
@@ -42,6 +42,7 @@ app.use('/', require('./routes/index')); // Home routes
 app.use('/products', require('./routes/products')); // Product routes
 app.use('/users', require('./routes/users')); // User routes
 app.use('/cart', require('./routes/cart')); // Cart routes
+app.use('/checkout', require('./routes/checkout')); // Checkout routes
 
 // Port
 const port = process.env.PORT || 3000;

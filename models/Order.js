@@ -7,16 +7,19 @@ const Order = db.define('Order', {
   id: {
     type: DataTypes.UUID,
     primaryKey: true,
-    unique: true,
-    defaultValue: DataTypes.UUIDV4,
+    defaultValue: DataTypes.UUIDV4
   },
   price: {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
-  address: {
+  addressLine1: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  addressLine2: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   phone: {
     type: DataTypes.INTEGER,
@@ -34,16 +37,16 @@ const Order = db.define('Order', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  companyName: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   country: {
     type: DataTypes.STRING,
     allowNull: false,
   },
   city: {
     type: DataTypes.STRING,
-    allowNull: false,
-  },
-  shippingPrice: {
-    type: DataTypes.FLOAT,
     allowNull: false,
   },
   discount: {

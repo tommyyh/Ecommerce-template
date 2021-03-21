@@ -73,9 +73,11 @@
       <h1 style="margin-top: 75px;">Shopping Cart</h1>
       <% if (req.isAuthenticated()) { %>
         <% if (!cart.cartProducts[0]) { %>
+          <%= cart.id %>
           <hr>
           <h1 style="margin-top: 10px;">Your cart is empty</h1>
         <% } else { %>
+          <%= cart.id %>
           <% cart.cartProducts.forEach(cartProduct => { %>
             <hr>
             <div style="margin-top: 50px;">
@@ -131,7 +133,9 @@
             </div>
             <div style="margin-top: 30px;">
               <h1>Total: $<%= cart.totalPrice %></h1>
-              <button style="width: 150px; height: 50px;">Checkout</button>
+              <a href="/checkout/shipping-information">
+                <button style="width: 150px; height: 50px;">Checkout</button>
+              </a>
             </div>
           </div>
         <% } %>
@@ -144,6 +148,7 @@
             <hr>
             <h1 style="margin-top: 10px;">Your cart is empty</h1>
           <% } else { %>
+            <%= cart.id %>
             <% cart.listOfProducts.forEach(product => { %>
               <hr>
               <div style="margin-top: 50px;">
@@ -199,7 +204,9 @@
               </div>
               <div style="margin-top: 30px;">
                 <h1>Total: $<%= cart.totalPrice %></h1>
-                <button style="width: 150px; height: 50px;">Checkout</button>
+                <a href="/checkout/shipping-information">
+                  <button style="width: 150px; height: 50px;">Checkout</button>
+                </a>
               </div>
             </div>
           </div>

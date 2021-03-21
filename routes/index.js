@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
   // First account = admin
   if (!users[0]) {
     const admin = await User.create({
-      name: 'Tommy',
+      name: 'Tommy Hoang',
       email: process.env.ADMIN_EMAIL,
       password: await bcrypt.hash(process.env.ADMIN_PASSWORD, 10),
       isAdmin: 1

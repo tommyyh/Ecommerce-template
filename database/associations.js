@@ -6,6 +6,7 @@ const Review = require('../models/Review');
 const User = require('../models/User');
 const Coupon = require('../models/Coupon');
 const CartProducts = require('../models/CartProducts');
+const OrderItems = require('../models/OrderItems');
 
 // User + Cart
 User.hasOne(Cart);
@@ -23,6 +24,10 @@ Review.belongsTo(User);
 User.hasMany(Order);
 Order.belongsTo(User);
 
+// Order + order items
+Order.hasMany(OrderItems);
+OrderItems.belongsTo(Order);
+
 // Cart products + cart
 Cart.hasMany(CartProducts);
 CartProducts.belongsTo(Cart);
@@ -36,6 +41,7 @@ Review.sync();
 User.sync();
 Coupon.sync();
 CartProducts.sync();
+OrderItems.sync();
 
 module.exports = {
   Cart,
@@ -45,5 +51,6 @@ module.exports = {
   Review,
   User,
   Coupon,
-  CartProducts
+  CartProducts,
+  OrderItems
 };

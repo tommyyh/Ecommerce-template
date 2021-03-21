@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <title>Ecommerce | Success</title>
+    <style>
+      body {
+        background: #282828;
+        color: #fff;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 100;
+      }
+  
+      a {
+        color: lawngreen;
+      }
+
+      .products:first-child {
+        margin-left: 0;
+      }
+
+      .products {
+        margin-left: 50px;
+      }
+
+      #quantity {
+        width: 56px;
+        height: 25px;
+        border-radius: 3px;
+        border: 1px #fff solid;
+      }
+
+      #checkout-title {
+        margin-top: 4rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <h1>Ecommerce</h1>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <% if (req.isAuthenticated() && req.user.isAdmin == 1) { %>
+            <li><a href="/products/new">Add Product</a></li>
+          <% } %>
+          <% categories.forEach(category => { %>
+            <li><a href="/products/category/<%= category.title %>"><%= category.title %></a></li>
+          <% }) %>
+          <% if (!req.isAuthenticated()) { %>
+            <li><a href="/users/login">Sign In</a></li>
+          <% } %>
+          <% if (req.isAuthenticated()) { %>
+            <li><a href="/users/account">My Account</a></li>
+          <% } %>
+          <li><a href="/cart">Cart</a></li>
+        </ul>
+        <form action="/" method="GET">
+          <input type="search" name="searchField" value="<%= req.query.searchField %>" placeholder="Search">
+          <button type="submit">Search</button>
+        </form>
+        <% searchedProducts.forEach(product => { %>
+          <div style="margin-top: 50px;">
+            <a href="/products/show/<%= product.slug %>" style="color: #fff; text-decoration: none;">
+              <img id="searchImg" width="50px" height="50px" style="object-fit: cover;" src="https://ecommerce-template-tommy.s3.eu-central-1.amazonaws.com/<%= product.imagePath %>">
+              <h5><%= product.title %></h5>
+            </a>
+          </div>
+        <% }) %>
+      </nav>
+      <hr>
+    </header>
+    <main>
+      <h1>Thank you.</h1>
+      <p>Your order was placed successfully! Check your email for closer details</p>
+      <a href="/">Continue shopping</a>
+    </main>
+  </body>
+</html>

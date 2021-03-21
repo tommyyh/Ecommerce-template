@@ -2,7 +2,7 @@ const express = require('express');
 const { Op } = require('sequelize');
 
 const router = express.Router();
-const { Category, Product, User, Cart, CartProducts, Coupon } = require('../database/associations');
+const { Category, Product, User, Cart, CartProducts, Coupon, OrderItems, Order } = require('../database/associations');
 const { AnonymousCart } = require('../models/Cart');
 
 // Cart route
@@ -46,7 +46,7 @@ router.post('/add-to-cart/:slug', async (req, res) => {
     // Check if user is authenticated
     if (req.isAuthenticated()) {
       // Fetch data
-      const cart = await Cart.findOne({ where: { id: req.user.id } });
+      const cart = await Cart.findOne({ where: { UserId: req.user.id } });
       const user = await User.findByPk(req.user.id, { include: Cart });
       const cartProduct = await CartProducts.findOne({
         where: { CartId: user.Cart.id, slug: req.params.slug }
@@ -108,7 +108,7 @@ router.put('/update-quantity/:slug', async (req, res) => {
   try {
     if (req.isAuthenticated()) {
       const user = await User.findByPk(req.user.id, { include: Cart });
-      const cart = await Cart.findOne({ where: { id: req.user.id } });
+      const cart = await Cart.findOne({ where: { UserId: req.user.id } });
       const cartProduct = await CartProducts.findOne({
         where: { CartId: user.Cart.id, slug: req.params.slug }
       });
@@ -141,8 +141,8 @@ router.put('/update-quantity/:slug', async (req, res) => {
     }
 
     res.redirect('/cart');
-  } catch {
-    res.redirect('/');
+  } catch (err) {
+    res.redirect('/'); console.log(err)
   } 
 });
 
@@ -151,18 +151,18 @@ router.delete('/remove-item/:slug', async (req, res) => {
   try {
     if (req.isAuthenticated()) {
       const user = await User.findByPk(req.user.id, { include: Cart });
-      const cart = await Cart.findOne({ where: { id: req.user.id } });
+      const cart = await Cart.findOne({ where: { UserId: req.user.id } });
       const cartProduct = await CartProducts.findOne({
         where: { slug: req.params.slug, CartId: user.Cart.id }
       });
-      
-      // Remove product
-      await cartProduct.destroy();
   
       // Updating price
       await cart.update({
         price: cart.price - cartProduct.totalPrice
       });
+
+      // Remove product
+      await cartProduct.destroy();
   
       // Updating total price
       await cart.update({
@@ -177,8 +177,8 @@ router.delete('/remove-item/:slug', async (req, res) => {
     }
 
     res.redirect('/cart');
-  } catch {
-    res.redirect('/cart');
+  } catch (err) {
+    res.redirect('/cart'); console.log(err);
   }
 });
 
@@ -188,7 +188,7 @@ router.post('/add-coupon', async (req, res) => {
 
   try {
     if (req.isAuthenticated()) {
-      const cart = await Cart.findOne({ where: { id: req.user.id } });
+      const cart = await Cart.findOne({ where: { UserId: req.user.id } });
       
       if (!coupon) {
         res.redirect('/cart');

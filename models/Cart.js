@@ -1,13 +1,14 @@
 const { DataTypes } = require('sequelize');
+const uuid = require('uuid');
 
 const db = require('../database/database');
 
 // Cart model - logged in
 const Cart = db.define('Cart', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     primaryKey: true,
-    autoIncrement: true,
+    defaultValue: DataTypes.UUIDV4
   },
   price: {
     type: DataTypes.FLOAT,
@@ -29,6 +30,7 @@ const Cart = db.define('Cart', {
 // Cart model - not logged in
 class AnonymousCart {
   constructor(cart) {
+    this.id = cart.id || uuid.v4();
     this.totalPrice = cart.totalPrice || 0;
     this.price = cart.price || 0;
     this.discount = cart.discount || 0;

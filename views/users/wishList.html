@@ -6,20 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <title>Ecommerce | Edit Product</title>
-  </head>
-  <style>
-    body {
-      background: #282828;
-      color: #fff;
-      font-family: 'Roboto', sans-serif;
-      font-weight: 100;
-    }
+    <title>Ecommerce | Wish list</title>
+    <style>
+      body {
+        background: #282828;
+        color: #fff;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 100;
+      }
+  
+      a {
+        color: lawngreen;
+      }
 
-    a {
-      color: lawngreen;
-    }
-  </style>
+      #logout {
+        width: 80px;
+        height: 30px;
+      }
+    </style>
+  </head>
   <body>
     <header>
       <nav>
@@ -55,41 +60,21 @@
         <% }) %>
       </nav>
     </header>
-    <h1 style="margin-top: 65px">Edit product</h1>
-    <form action="/products/edit/<%= product.slug %>?_method=PUT" method="POST" enctype="multipart/form-data">
-      <div>
-        <% if (categories) { %>
-          <select name="productCategory">
-            <option value="<%= product.CategoryTitle %>" selected><%= product.CategoryTitle %></option>
-            <% categories.forEach(category => { %>
-              <option value="<%= category.title %>"><%= category.title %></option>
-            <% }) %>
-          </select>
-        <% } else { %>
-          <select name="productCategory">
-            <option></option>
-          </select>
-        <% } %>
-      </div>
-      <div>
-        <input type="text" name="title" value="<%= product.title %>" placeholder="Title" />
-      </div>
-      <div>
-        <input type="number" name="price" step="0.01" value="<%= product.price %>" placeholder="Price" />
-      </div>
-      <div>
-        <input type="text" name="brand" value="<%= product.brand %>" placeholder="Brand" />
-      </div>
-      <div>
-        <input type="number" name="discount" value="<%= product.discount %>" placeholder="Discount" />
-      </div>
-      <div>
-        <input type="text" name="description" value="<%= product.description %>" placeholder="Description" />
-      </div>
-      <div>
-        <input type="file" name="productImage" placeholder="Image" />
-      </div>
-      <button style="margin-top: 25px" type="submit">Edit Product</button>
-    </form>
+    <main>
+      <h1>My wish list</h1>
+      <% wishListProducts.forEach(wishListProduct => { %>
+        <hr>
+        <div style="margin-top: 20px;">
+          <a href="/products/show/<%= wishListProduct.slug %>">
+            <img width="275px" height="175px" src="https://ecommerce-template-tommy.s3.eu-central-1.amazonaws.com/<%= wishListProduct.imagePath %>">
+          </a>
+          <h1><%= wishListProduct.title %></h1>
+          <h3>$<%= wishListProduct.totalPrice %></h3>
+          <form action="/products/remove-from-wish-list/<%= wishListProduct.slug %>?_method=DELETE" method="POST">
+            <button type="submit">Remove</button>
+          </form>
+        </div>
+      <% }) %>
+    </main>
   </body>
 </html>

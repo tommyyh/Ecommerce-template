@@ -1,10 +1,9 @@
-const { DataTypes, INTEGER } = require('sequelize');
-const SequelizeSlugify = require('sequelize-slugify');
+const { DataTypes } = require('sequelize');
 
 const db = require('../database/database');
 
-// Order items model
-const OrderItems = db.define('OrderItems', {
+// Wish list model
+const WishList = db.define('WishList', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -17,10 +16,6 @@ const OrderItems = db.define('OrderItems', {
   imagePath: {
     type: DataTypes.STRING,
   },
-  quantity: {
-    type: DataTypes.INTEGER,
-    defaultValue: 1,
-  },
   totalPrice: {
     type: DataTypes.FLOAT,
   },
@@ -29,4 +24,4 @@ const OrderItems = db.define('OrderItems', {
   },
 });
 
-module.exports = OrderItems;
+module.exports = WishList;

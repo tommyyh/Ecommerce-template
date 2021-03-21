@@ -10,7 +10,7 @@ const slugify = require('slugify');
 const { Op } = require('sequelize');
 
 const router = express.Router();
-const { Category, Product, Coupon } = require('../database/associations');
+const { Category, Product, Coupon, WishList } = require('../database/associations');
 
 // S3 Client
 const s3 = new aws.S3({
@@ -110,6 +110,38 @@ router.get('/show/:slug', async (req, res) => {
     searchedProducts
   });
 });
+
+// Add to wish list
+router.post('/add-to-wish-list/:slug', isLoggedIn, async (req, res) => {
+  const product = await Product.findOne({ where: { slug: req.params.slug } });
+
+  try {
+    await WishList.create({
+      title: product.title,
+      imagePath: product.imagePath,
+      totalPrice: product.totalPrice,
+      slug: product.slug,
+      UserId: req.user.id
+    });
+
+    res.redirect('/users/my-wish-list');
+  } catch (err) {
+    res.redirect(`/products/show/${req.params.slug}`);
+    console.log(err);
+  }
+});
+
+// Remove from wish list
+router.delete('/remove-from-wish-list/:slug', async (req, res) => {
+  const wishListProduct = await WishList.findOne({ where: { slug: req.params.slug } });
+
+  try {
+    await wishListProduct.destroy();
+    res.redirect('/users/my-wish-list');
+  } catch {
+    res.redirect('/users/my-wish-list');
+  }
+})
 
 // New
 router.get('/new', isAdmin, async (req, res) => {
@@ -319,9 +351,18 @@ router.post('/coupon', isAdmin, async (req, res) => {
   }
 });
 
-// Protect routes for logged in only
+// Protect routes for logged admins only
 function isAdmin(req, res, next) {
   if (req.isAuthenticated() && req.user.isAdmin == 1) {
+    return next();
+  }
+
+  res.redirect('/');
+}
+
+// Protect routes for logged in only
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) {
     return next();
   }
 

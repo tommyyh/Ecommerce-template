@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt');
 const { Op } = require('sequelize');
 
 const router = express.Router();
-const { User, Category, Product, Cart, Order, OrderItems } = require('../database/associations');
+const { User, Category, Product, Cart, Order, OrderItems, WishList } = require('../database/associations');
 const authenticate = require('../config/passport');
 
 // Authenticate
@@ -109,6 +109,23 @@ router.get('/my-orders/:id', async (req, res) => {
     searchedProducts,
     categories,
     req: req
+  })
+});
+
+router.get('/my-wish-list', loggedIn, async (req, res) => {
+  const categories = await Category.findAll();
+  const searchedProducts = await Product.findAll({
+    where: {
+      title: { [Op.like]: '%' + req.query.searchField + '%' }
+    }
+  });
+  const wishListProducts = await WishList.findAll({ where: { UserId: req.user.id } });
+
+  res.render('users/wishList.html', {
+    searchedProducts,
+    categories,
+    req: req,
+    wishListProducts
   })
 });
 

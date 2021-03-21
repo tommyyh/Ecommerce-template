@@ -69,6 +69,7 @@
           <% } %>
           <% if (req.isAuthenticated()) { %>
             <li><a href="/users/account">My Account</a></li>
+            <li><a href="/users/my-wish-list">Wish List</a></li>
           <% } %>
           <li><a href="/cart">Cart</a></li>
         </ul>
@@ -107,6 +108,11 @@
         </div>
         <button style="margin-top: 30px;" type="submit">Add To Cart</button>
       </form>
+      <% if (req.isAuthenticated()) { %>
+        <form action="/products/add-to-wish-list/<%= product.slug %>" method="POST">
+          <button style="margin-top: 30px;" type="submit">Add To With List</button>
+        </form>
+      <% } %>
       <% if (req.isAuthenticated() && req.user.isAdmin == 1) { %>
         <a class="edit-link" href="/products/edit/<%= product.slug %>">
           <button style="margin-top: 4px;">Edit Product</button>

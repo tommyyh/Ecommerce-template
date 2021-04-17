@@ -1,5 +1,5 @@
 # Ecommerce-template
-An ecommerce site template (backend) for an upcoming fullstack project. 
+An ecommerce site template (backend).
 
 ## Packages
 
